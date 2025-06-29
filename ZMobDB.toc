@@ -1,0 +1,9 @@
+## Author: osprior
+## Original: Dant
+## Title: ZMobDB Advanced7
+## Version: 7.0.1
+## Interface: 80200
+## Notes: 3D Animation Portrait and User Database
+## SavedVariables: ZMobDB_table, ZMobDB_Options_4, ZMobDB_Profile
+## SavedVariablesPerCharacter: ZMobDB_Backup
+ZMobDB.xml

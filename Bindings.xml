@@ -1,0 +1,39 @@
+<Bindings>
+
+	<Binding name="ZMOBDB_CONFIG" header="ZMOBDB">
+		if InCombatLockdown() then
+			DEFAULT_CHAT_FRAME:AddMessage("ZMobDB:MENU can't use while in combat");
+		else
+			if ZMobDB_Configuration:IsVisible() then
+				ZMobDB_Configuration:Hide();
+			else
+				ZMobDB_Configuration:Show();
+			end
+		end
+	</Binding>
+
+	<Binding name="ZMOBDB_REFRESH">
+		ZMobDB_BoundingBox_Reflesh_sub()
+	</Binding>
+
+	<Binding name="ZMOBDB_COPY">
+		if InCombatLockdown() then
+			DEFAULT_CHAT_FRAME:AddMessage("ZMobDB:MENU can't use while in combat");
+		else
+			if ZMobDB_Copyto_Dialog:IsVisible() then
+				ZMobDB_Copyto_Dialog:Hide();
+			else
+				ZMobDB_Copyto_Dialog:Show();
+			end
+		end
+	</Binding>
+
+	<Binding name="ZMOBDB_TESTBOX">
+			if ZMobDB_AnimationTest_Dialog:IsVisible() then
+				ZMobDB_AnimationTest_Dialog:Hide();
+			else
+				ZMobDB_AnimationTest_Dialog:Show();
+			end
+	</Binding>
+
+</Bindings>
