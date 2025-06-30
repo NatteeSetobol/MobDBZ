@@ -326,6 +326,7 @@ function ZMobDB_Get_Unit_Aura(unittype)
 	local Buff_name,Buff_Rank,DeBuff_name,DeBuff_Rank = nil;
 	local Unit_Buff,Unit_DeBuff,Unit_Stealth = nil;
 	local Unit_Shape = "Normal";
+	
 --	while (UnitBuff(unittype, i_Buff)) do
 --		Buff_name,Buff_Rank = UnitBuff(unittype, i_Buff);
 --			if Buff_name ~= nil then
@@ -375,6 +376,7 @@ function ZMobDB_Get_Unit_Aura(unittype)
 --			end
 --		i_DeBuff = i_DeBuff + 1;
 --	end
+
 	return Unit_Buff,Unit_DeBuff,Unit_Shape,Unit_Stealth
 end
 function ZMobDB_GetStats(unittype)

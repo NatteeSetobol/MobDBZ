@@ -39,6 +39,49 @@ local ZMobDB_Avatar_Main_OnEvent = {};		-- event manager
 -- Load/Save Option Setting
 -- ---------------------------------------------------------
 function ZMobDB_setup()
+
+	local cameras_index = 0;
+	local name_config = "ZMobDB_Configuration"
+	local Config_window = _G[name_config]
+
+	Config_window.background = Config_window:CreateTexture(nil, "BACKGROUND")
+	Config_window.background:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Background")
+	Config_window.background:SetVertexColor(0.0, 1.0, 0.0, 0.5)
+
+	Config_window.background:SetAllPoints(Config_window)
+
+
+	SetBackdrop("ZMobDB_Configuration","Interface\\DialogFrame\\UI-DialogBox-Background",0,1.0,0,0.5)
+
+	for i=0,19 do
+		SetBackdrop("ZMobDB_Camera" .. tostring(i), "Interface\\Tooltips\\UI-Tooltip-Background", 1,1,1,0.5)
+	end
+
+	local name_Copyto_Dialog = "ZMobDB_Copyto_Dialog"
+	local Copyto_Dialog = _G[name_Copyto_Dialog]
+
+	Copyto_Dialog.background = Copyto_Dialog:CreateTexture(nil, "BACKGROUND")
+	Copyto_Dialog.background:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Background")
+	Copyto_Dialog.background:SetVertexColor(0.0, 1.0, 0.0, 0.5)
+
+	Copyto_Dialog.background:SetAllPoints(Copyto_Dialog)
+
+
+	--SetBackdrop("ZMobDB_Copyto_Dialog","Interface\\DialogFrame\\UI-DialogBox-Background",0,0,0,0.5)
+	local name_AnimationTest_Dialog = "ZMobDB_AnimationTest_Dialog"
+	local AnimationTest_Dialog = _G[name_AnimationTest_Dialog]
+
+	AnimationTest_Dialog.background = AnimationTest_Dialog:CreateTexture(nil, "BACKGROUND")
+	AnimationTest_Dialog.background:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Background")
+	AnimationTest_Dialog.background:SetVertexColor(0.0, 1.0, 0.0, 0.5)
+
+	AnimationTest_Dialog.background:SetAllPoints(AnimationTest_Dialog)
+
+	--SetBackdrop("ZMobDB_AnimationTest_Dialog","Interface\\DialogFrame\\UI-DialogBox-Background",1,1,1,0.5)
+
+
+
+
 	local ZMobDBPlayerIndex=UnitName("player").."."..GetRealmName();
 	ZMobDBoption=nil
 	if(not ZMobDB_Backup)then ZMobDB_Backup={}; end
@@ -101,6 +144,20 @@ function ZMobDB_setup()
 		end
 	end
 end
+
+function SetBackdrop(Element_Name, TexturesPath, red,blue,green,alpha)
+	local name_config = Element_Name
+	local Config_window = _G[name_config]
+
+	-- Create background texture
+	Config_window.background = Config_window:CreateTexture(nil, "BACKGROUND")
+	Config_window.background:SetTexture(TexturePath)
+	Config_window.background:SetVertexColor(red, blue, green, alpha)
+
+	-- Set the anchors to fill the frame
+	Config_window.background:SetAllPoints(Config_window)
+end
+
 function ZMobDB_SaveData(bBox)
 	local db_name = bBox.DataName;
 	local unittype = ZMobDB_Avatar_GetUnitType(bBox:GetChildren());
@@ -114,7 +171,7 @@ function ZMobDB_SaveData(bBox)
 			rotation = ZMobDB_Avatar_GetRotation(bBox:GetChildren()),
 			position = {h,v},
 			autoport = bBox:GetChildren().port,
-			}
+		}
 	end
 end
 
@@ -1160,7 +1217,8 @@ function ZMobDB_Settings_RefreshBoundingBox(self)
 			end
 			self:SetWidth(profile.scale.width);
 			self:SetHeight(profile.scale.height);
-			--self:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);
+			Mixin(self, BackdropTemplateMixin)
+			self:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);
 			self:SetFrameStrata(ZMobDB_GetOption(ZMobDB_Unit_word[profile.avatar.unitType],"Strata"));
 			self:EnableMouse(true);
 			profile.cursorControls.isEnabled = true;
@@ -1170,7 +1228,8 @@ function ZMobDB_Settings_RefreshBoundingBox(self)
 			profile.scale.width = 0;
 			self:SetHeight(0);
 			profile.scale.height = 0;
-			--self:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);
+			Mixin(self, BackdropTemplateMixin)
+			self:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);
 			self:EnableMouse(false);
 			profile.cursorControls.isEnabled = false;
 		elseif (self:GetID() == 20) then
@@ -1178,7 +1237,8 @@ function ZMobDB_Settings_RefreshBoundingBox(self)
 			profile.scale.width = 200;
 			self:SetHeight(200);
 			profile.scale.height = 200;
-			--self:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);
+			Mixin(self, BackdropTemplateMixin)			
+			self:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);
 			self:EnableMouse(true);
 			profile.cursorControls.isEnabled = true;
 			self:Hide();
@@ -1206,11 +1266,11 @@ function ZMobDB_Settings_RefreshBoundingBox(self)
 		if (self:GetID() ~= 9) and (self:GetID() ~= 20) then
 			local button = "ZMobDB_Frame_"..profile.avatar.unitType;
 			Button_Name = _G[button];
-			if Button_Name then
 			Button_Name:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT",profile.anchor.x,profile.anchor.y);
 			Button_Name:SetWidth(profile.scale.width);
 			Button_Name:SetHeight(profile.scale.height);
-			--Button_Name:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);	
+			Mixin(Button_Name, BackdropTemplateMixin)
+			Button_Name:SetBackdropColor(profile.bgColor.red, profile.bgColor.green, profile.bgColor.blue, profile.bgColor.alpha);	
 			Button_Name:SetAttribute("type", "target");
 			Button_Name:SetAttribute("type2", "");
 			ClickCastFrames = ClickCastFrames or {};
@@ -1218,6 +1278,7 @@ function ZMobDB_Settings_RefreshBoundingBox(self)
 
 			Button_Name:SetFrameStrata(ZMobDB_GetOption(ZMobDB_Unit_word[profile.avatar.unitType],"Strata"));
 			Button_Name:SetFrameLevel(self:GetFrameLevel() + 1);
+
 
 			if ZMobDB_GetOption(ZMobDB_Unit_word[profile.avatar.unitType],"EnableMouse")=="on" then
 				self:EnableMouse(true);
@@ -1245,7 +1306,7 @@ function ZMobDB_Settings_RefreshBoundingBox(self)
 			Text_Name:SetFontObject(GameFontNormal);
 			Text_Name:SetText(profile.avatar.unitType);
 			Text_Name:Hide();
-			end
+
 		end
 		RefreshBoundingBox_loaded = 1;
 end
@@ -1564,9 +1625,6 @@ function ZMobDB_Register_SlashCommands()
 	SLASH_ZMOBDBCOMMANDS2 = "/zmob";
 end
 function ZMobDB_Main_ChatCommandHandler(msg)
-	if ((not msg) or (strlen(msg) <= 0)) then
-		return;
-	end
 	local commandName, params = ZMobDB_Extract_NextParameter(msg);
 	if ((commandName) and (strlen(commandName) > 0)) then
 		commandName = string.lower(commandName);
@@ -1962,7 +2020,6 @@ function ZMobDB_Option_Change()
 			local PotisionSet = ZMobDB_Profile[ZMobDBPlayerIndex][i];
 			local name_frame = "ZMobDB_Frame_"..unittype;
 			Frame_Name = _G[name_frame];
-			if Frame_Name then
 			if ZMobDB_GetOption("Settings","Border") == "tooltip" or ZMobDB_GetOption("Settings","Border") == "edge" then
 				bBox:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
                                           edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
@@ -2065,7 +2122,6 @@ function ZMobDB_Option_Change()
 			if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"Animation_Stealth") =="on" then
 				bBox:GetChildren():SetAlpha(1);
 			end
-		end
 		end
 	end
 
@@ -2459,12 +2515,12 @@ function ZMobDB_Change_RaidIcon(avatar)
 			texture_pvp:Show();
 			texture_raid:Hide();
 		else
-			--texture_pvp:Hide();
-			--texture_raid:Hide();
+			texture_pvp:Hide();
+			texture_raid:Hide();
 		end
 	else
-		--texture_raid:Hide();
-		--texture_pvp:Hide();
+		texture_raid:Hide();
+		texture_pvp:Hide();
 	end
 end
 -- --------------------------------------------------------
@@ -3536,13 +3592,10 @@ function ZMobDB_OnLoad(self)
 	self:RegisterEvent("PLAYER_DEAD");
 	self:RegisterEvent("PLAYER_ALIVE");
 	self:RegisterEvent("PLAYER_UNGHOST");
-	-- self:RegisterUnitEvent("PLAYER_DEAD","player");
-	-- self:RegisterUnitEvent("PLAYER_ALIVE","player");
-	-- self:RegisterUnitEvent("PLAYER_UNGHOST","player");
 	self:RegisterEvent("GROUP_ROSTER_UPDATE");
 	self:RegisterEvent("UNIT_PET");
 	self:RegisterEvent("PLAYER_TARGET_CHANGED");
-	self:RegisterEvent("PLAYER_FOCUS_CHANGED");
+	-- self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 	self:RegisterEvent("PLAYER_FLAGS_CHANGED");
 	self:RegisterEvent("UNIT_AURA");
 	self:RegisterEvent("UNIT_HEALTH");
