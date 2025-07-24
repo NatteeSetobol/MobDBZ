@@ -320,12 +320,78 @@ function ZMobDB_Get_db_name(db_name,Unit_File_name,stats)
 		return db_select;
 end
 function ZMobDB_Get_Unit_Aura(unittype)
-	local i_Buff = 1;
-	local i_DeBuff = 1;
-	local Unit_word = ZMobDB_Unit_word[unittype];
-	local Buff_name,Buff_Rank,DeBuff_name,DeBuff_Rank = nil;
-	local Unit_Buff,Unit_DeBuff,Unit_Stealth = nil;
-	local Unit_Shape = "Normal";
+    local Unit_word = ZMobDB_Unit_word[unittype]
+    local Unit_Buff, Unit_DeBuff, Unit_Stealth = nil
+    local Unit_Shape = "Normal"
+    
+    -- Buffs
+    local i = 1
+    while true do
+        local aura = C_UnitAuras.GetAuraDataByIndex(unittype, i, "HELPFUL")
+        if not aura then break end
+
+        local name = aura.name
+
+        for index, value in ipairs(ZMobDBBuff_Table) do
+            if string.find(name, value) and ZMobDB_GetOption(Unit_word, "Animation_" .. ZMobDBBuff_Name[index]) == "on" then
+                Unit_Buff = ZMobDBBuff_Name[index]
+            end
+        end
+
+        for index, value in ipairs(ZMobDBForm_Table) do
+            if string.find(name, value) then
+                Unit_Shape = ZMobDBForm_Name[index]
+            end
+        end
+
+        for index, value in ipairs(ZMobDBStealth_Table) do
+            if string.find(name, value) then
+                Unit_Stealth = ZMobDBStealth_Name[index]
+            end
+        end
+
+        if name == "Stealth" then
+            Unit_Stealth = "Stealth"
+        end
+
+        i = i + 1
+    end
+
+    -- Debuffs
+    i = 1
+    while true do
+        local aura = C_UnitAuras.GetAuraDataByIndex(unittype, i, "HARMFUL")
+        if not aura then break end
+
+        local name = aura.name
+
+        if name ~= "Anesthetic Poison" then
+            for index, value in ipairs(ZMobDBDebuff_Table) do
+                if string.find(name, value) and ZMobDB_GetOption(Unit_word, "Animation_" .. ZMobDBDebuff_Name[index]) == "on" then
+                    Unit_DeBuff = ZMobDBDebuff_Name[index]
+                end
+            end
+
+            for index, value in ipairs(ZMobDBForm_Table) do
+                if string.find(name, value) then
+                    Unit_Shape = ZMobDBForm_Name[index]
+                end
+            end
+        end
+
+        i = i + 1
+    end
+
+    return Unit_Buff, Unit_DeBuff, Unit_Shape, Unit_Stealth
+end
+
+--function ZMobDB_Get_Unit_Aura(unittype)
+--	local i_Buff = 1;
+--	local i_DeBuff = 1;
+--	local Unit_word = ZMobDB_Unit_word[unittype];
+--	local Buff_name,Buff_Rank,DeBuff_name,DeBuff_Rank = nil;
+--	local Unit_Buff,Unit_DeBuff,Unit_Stealth = nil;
+--	local Unit_Shape = "Normal";
 	
 --	while (UnitBuff(unittype, i_Buff)) do
 --		Buff_name,Buff_Rank = UnitBuff(unittype, i_Buff);
@@ -377,8 +443,8 @@ function ZMobDB_Get_Unit_Aura(unittype)
 --		i_DeBuff = i_DeBuff + 1;
 --	end
 
-	return Unit_Buff,Unit_DeBuff,Unit_Shape,Unit_Stealth
-end
+--	return Unit_Buff,Unit_DeBuff,Unit_Shape,Unit_Stealth
+--end
 function ZMobDB_GetStats(unittype)
 	local Unit_word = ZMobDB_Unit_word[unittype];
 	local Unit_Buff,Unit_DeBuff,Unit_Shape,Unit_Stealth = ZMobDB_Get_Unit_Aura(unittype);

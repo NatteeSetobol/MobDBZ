@@ -1442,13 +1442,17 @@ function ZMobDB_BoundingBox_Reflesh_sub(bBox)
 				ghost_model = "Alliance_Flag";
 			end
 		end
-		bBox:GetChildren():SetModel(ZMobDB_Event_Animation[ghost_model].File);
-		ZMobDB_Avatar_SetZoom(bBox:GetChildren(), db_zoom_ani);
-		ZMobDB_Avatar_SetPosition(bBox:GetChildren(), db_position_ani[1], db_position_ani[2]);
-		if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"FixFace") =="off" then
-			ZMobDB_Avatar_SetRotation(bBox:GetChildren(), db_rotation_ani);
+		local ok = pcall(function() bBox:GetChildren():SetModel(ZMobDB_Event_Animation[ghost_model].File) end)
+		if not ok then
+			
+		else
+			ZMobDB_Avatar_SetZoom(bBox:GetChildren(), db_zoom_ani);
+			ZMobDB_Avatar_SetPosition(bBox:GetChildren(), db_position_ani[1], db_position_ani[2]);
+			if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"FixFace") =="off" then
+				ZMobDB_Avatar_SetRotation(bBox:GetChildren(), db_rotation_ani);
+			end
+			ZMobDB_Avatar_SetScale(bBox:GetChildren(), db_scale_ani);
 		end
-		ZMobDB_Avatar_SetScale(bBox:GetChildren(), db_scale_ani);
 	elseif 
 		(stats == "Ice" or 
 		stats == "Shackle" or 
@@ -1480,9 +1484,9 @@ function ZMobDB_BoundingBox_Reflesh_sub(bBox)
 	end
 
 	if UnitExists(unittype) and not(UnitIsVisible(unittype)) and stats ~="Ghost" and ZMobDB_GetOption("Settings","Symbol") == "on" then
-		-- bBox:GetChildren():SetCamera(2);
+		bBox:GetChildren():SetCamera(2);
 		bBox:GetChildren():SetPortraitZoom(0);
-		bBox:GetChildren():SetModel("Interface\\Buttons\\talktomequestion_grey.mdx");
+		bBox:GetChildren():SetModel("Interface\\Buttons\\talktomequestion_ltblue.mdx");
 		bBox:GetChildren():SetModelScale(4.25);
 		bBox:GetChildren():SetPosition(0,0,-1.5);
 		bBox:GetChildren().mark ="on";
@@ -2286,13 +2290,20 @@ function ZMobDB_ChangeModel(avatar,OnShow)
 							Ghost_Model = "Alliance_Flag";
 						end
 					end
-					avatar:SetModel(ZMobDB_Event_Animation[Ghost_Model].File);
-					ZMobDB_Avatar_SetZoom(avatar, db_zoom_ani);
-					ZMobDB_Avatar_SetPosition(avatar, db_position_ani[1], db_position_ani[2]);
-					if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"FixFace") =="off" then
-						ZMobDB_Avatar_SetRotation(avatar, db_rotation_ani);
+					if (ZMobDB_Event_Animation[Ghost_Model].File) then
+						local ok = pcall(function() avatar:SetModel(MobDB_Event_Animation[Ghost_Model].File) end)
+						if not ok then
+							avatar:ClearModel()
+						else
+							avatar:SetModel(ZMobDB_Event_Animation[Ghost_Model].File);
+							ZMobDB_Avatar_SetZoom(avatar, db_zoom_ani);
+							ZMobDB_Avatar_SetPosition(avatar, db_position_ani[1], db_position_ani[2]);
+							if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"FixFace") =="off" then
+								ZMobDB_Avatar_SetRotation(avatar, db_rotation_ani);
+							end
+							ZMobDB_Avatar_SetScale(avatar, db_scale_ani);
+						end
 					end
-					ZMobDB_Avatar_SetScale(avatar, db_scale_ani);
 				end
 			-- ---------------------------------------------------------
 			-- IceBlock,Shackle,Fear,Cyclone,Seduce
@@ -2320,13 +2331,19 @@ function ZMobDB_ChangeModel(avatar,OnShow)
 					-- avatar:SetCamera(2);
 					avatar:SetPortraitZoom(0);
 					avatar:GetParent().DataName = db_name_ani;
-					avatar:SetModel(ZMobDB_Event_Animation[stats].File);
-					ZMobDB_Avatar_SetZoom(avatar, db_zoom_ani);
-					ZMobDB_Avatar_SetPosition(avatar, db_position_ani[1], db_position_ani[2]);
-					if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"FixFace") =="off" then
-						ZMobDB_Avatar_SetRotation(avatar, db_rotation_ani);
+
+					if (InCombatLockdown()) then
+					else
+						if (ZMobDB_Event_Animation[stats].File) then
+							avatar:SetModel(ZMobDB_Event_Animation[stats].File);
+							ZMobDB_Avatar_SetZoom(avatar, db_zoom_ani);
+							ZMobDB_Avatar_SetPosition(avatar, db_position_ani[1], db_position_ani[2]);
+							if ZMobDB_GetOption(ZMobDB_Unit_word[unittype],"FixFace") =="off" then
+								ZMobDB_Avatar_SetRotation(avatar, db_rotation_ani);
+							end
+							ZMobDB_Avatar_SetScale(avatar, db_scale_ani);
+						end
 					end
-					ZMobDB_Avatar_SetScale(avatar, db_scale_ani);
 				end
 			-- ---------------------------------------------------------
 			-- Out of Range Mark
@@ -2339,9 +2356,21 @@ function ZMobDB_ChangeModel(avatar,OnShow)
 				if not(UnitIsVisible(unittype)) then
 					if avatar.mark ~="on" or (OnShow) then
 						-- avatar:SetCamera(2);
-						avatar:SetPortraitZoom(0);
-						avatar:SetModel("Interface\\Buttons\\talktomequestion_grey.mdx");
-						avatar.mark ="on";
+						if InCombatLockdown() then
+						else
+							avatar:SetPortraitZoom(0);
+
+							local path = "Interface\\Buttons\\talktomequestion_ltblue.mdx"
+							if path and path ~= "" then
+								local ok = pcall(function() avatar:SetModel(path) end)
+								if not ok then
+									avatar:ClearModel()
+								end
+							else
+								avatar:ClearModel()
+							end
+							avatar.mark ="on";
+						end
 					end
 					avatar:SetModelScale(4.25);
 					avatar:SetPosition(0,0,-1.5);
@@ -2442,7 +2471,7 @@ function ZMobDB_ChangeModel(avatar,OnShow)
 			if not(UnitIsVisible(unittype)) then
 				-- avatar:SetCamera(2);
 				avatar:SetPortraitZoom(0);
-				avatar:SetModel("Interface\\Buttons\\talktomequestion_grey.mdx");
+				avatar:SetModel("Interface\\Buttons\\talktomequestion_ltblue.mdx");
 				avatar.mark ="on";
 				avatar:SetModelScale(4.25);
 				avatar:SetPosition(0,0,-1.5);

@@ -24,16 +24,6 @@ Just put the Addon in your Addon folder. no needs another addon/library.
 *NOTE
  Needs to Disable "ZuxanaModelCitizen" if you installed it.
 
------------------------------------------------------------
-	PATCH FOR DRAGONFLIGHT (AND ABOVE)?
-------------------------------------------------------------
-- Took out unitbuff (I don't think this api is available anymore)
-- Fixed Size tag
-- SetBackDrop is no longer used.
-- SetColor is also no longer used.
-- TestBoz doesn't seem to be working
-
-I take no credit for making this Add-on and give the author some love!
 
 ------------------------------------------------------------
 	Mouse Controls

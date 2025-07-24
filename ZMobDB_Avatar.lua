@@ -99,11 +99,23 @@ function ZMobDB_Avatar_AttemptToRender(avatar, tick)
 				-- rendering until we're sure.
 				if avatar.mark ~= "on" and unittype ~="pet" and stats ~="Ghost" and ZMobDB_GetOption("Settings","Symbol") == "on" and UnitExists(unittype)then
 					-- avatar:SetCamera(2);
-					avatar:SetPortraitZoom(0);
-					avatar:SetModel("Interface\\Buttons\\talktomequestion_grey.mdx");
-					avatar:SetModelScale(4.25);
-					avatar:SetPosition(0,0,-1.5);
-					avatar.mark = "on";
+					if (InCombatLockdown()) then
+					else
+						avatar:SetPortraitZoom(0);
+						local path = "Interface\\Buttons\\talktomequestion_grey.mdx"
+						if path and path ~= "" then
+							local ok = pcall(function() avatar:SetModel(path) end)
+							if not ok then
+								--SetDisplayInfo(37976)
+								avatar:ClearModel()
+							end
+						else
+							--SetDisplayInfo(37976)
+						end
+						avatar:SetModelScale(4.25);
+						avatar:SetPosition(0,0,-1.5);
+						avatar.mark = "on";
+					end
 				end
 			end
 		end
