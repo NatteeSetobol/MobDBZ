@@ -1,6 +1,15 @@
 "Mob Database for Zuxana's Model Citizen(ZMobDB) Advanced" Release Note
 
 ------------------------------------------------------------
+	UPDATE
+------------------------------------------------------------
+Removed the code that disables Zoom, Rotation, etc. for portrait mode. In order to
+accomplish this you must go type /zmob config in chat (a window will pop up) and goto
+and uncheck "Hold Window" and in Specific DataBase, uncheck Player. Then close the 
+Windows and now you should be able to rotation, Zoom, etc.
+
+
+------------------------------------------------------------
 	about this addon
 ------------------------------------------------------------
 3D Animation portrait for your UI

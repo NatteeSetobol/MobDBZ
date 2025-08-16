@@ -1541,7 +1541,7 @@ function ZMobDB_SpecialEvent(event,bBox)
 				ZMobDB_BoundingBox_Drag(bBox);
 				ZMobDB_BoundingBox_Resize(bBox);
 			end
-			if ZMobDB_GetOption(ZMobDB_Unit_word[ZMobDB_Avatar_GetUnitType(ZMobDB_GetBoundingBox(bBox):GetChildren())],"Port") =="off" or ZMobDB_GetBoundingBox(bBox):GetChildren().port =="off" then
+			--if ZMobDB_GetOption(ZMobDB_Unit_word[ZMobDB_Avatar_GetUnitType(ZMobDB_GetBoundingBox(bBox):GetChildren())],"Port") =="off" or ZMobDB_GetBoundingBox(bBox):GetChildren().port =="off" then
 				ZMobDB_Avatar_RotateAndZoom(bBox);
 				ZMobDB_Avatar_RotateAndShrink(bBox);
 				ZMobDB_Avatar_Rotate(bBox);
@@ -1549,7 +1549,7 @@ function ZMobDB_SpecialEvent(event,bBox)
 				ZMobDB_Avatar_Shrink(bBox);
 				ZMobDB_Avatar_Pan(bBox);
 				ZMobDB_Avatar_Scale(bBox);
-			end
+			--end
 		end
 	end
 end
