@@ -906,9 +906,22 @@ function ZMobDB_BoundingBox_OnLoad(self)
 	self:RegisterEvent("VARIABLES_LOADED");
 	ZMobDB_SpecialEvent("BOUNDINGBOX_CREATED", self);
 end
-function ZMobDB_BoundingBox_OnMouseDown(self)
 
+
+local lastClick = 0
+local DOUBLE_CLICK_TIME = 0.3 -- seconds
+
+function ZMobDB_BoundingBox_OnMouseDown(self, button)
+	/*
 	local MouseButton = GetMouseButtonClicked();
+	local now = GetTime();
+	if button == "LeftButton" then
+		if (now - lastClick ) <= DOUBLE_CLICK_TIME then
+			print("Double click")
+		end
+		lastClick = now;
+	end 
+	*/
 	if (IsControlKeyDown()) and (IsShiftKeyDown()) and (IsAltKeyDown()) then
 		ZMobDB_ResetModel(self,MouseButton);
 	elseif (IsControlKeyDown()) and (IsShiftKeyDown()) then
@@ -927,6 +940,7 @@ function ZMobDB_ShadowFrame_OnMouseDown(self)
 	local id = self:GetID();
 	local name_camera = "ZMobDB_Camera"..id;
 	local bBox = _G[name_camera];
+
 	if (IsControlKeyDown()) and (IsShiftKeyDown()) and (IsAltKeyDown()) then
 		ZMobDB_ResetModel(bBox,MouseButton);
 	elseif (IsControlKeyDown()) and (IsShiftKeyDown()) then
@@ -1517,6 +1531,7 @@ end
 function ZMobDB_SpecialEvent(event,bBox)
 	local id = bBox:GetID();
 	if (event == "BOUNDINGBOX_REFRESHED") then
+
 		if ZMobDB_GetOption("Settings","HoldBox") ~= "on" and id ~=20 then
 			ZMobDB_CursorControl_SetButton(bBox, "Drag", "LeftButton", "SHIFT");
 			ZMobDB_CursorControl_SetButton(bBox, "Resize", "RightButton", "SHIFT");
@@ -1719,6 +1734,75 @@ function ZMobDB_Main_ChatCommandHandler(msg)
 	elseif (((strfind(commandName,"resetbox")))) then
 		ZMobDB_SetOption("Settings","ResetSwitch","on");
 		DEFAULT_CHAT_FRAME:AddMessage("All Windows Reset to Default when next login");
+	
+	elseif (((strfind(commandName,"tilt")))) then
+
+		local direction,params2 = ZMobDB_Extract_NextParameter(params);
+		local p = ZMobDB_Extract_NextParameter(params2);
+		local amount = 0.5
+
+		if (p) then
+			amount = tonumber(p)
+		end
+
+		if (direction == null) then
+			direction = "right"
+		end
+
+		local model = _G["ZMobDB_Camera0"]
+
+		if (model) then
+
+			local parent = _G["ZMobDB_Camera0"]
+			local model = _G["ZMobDB_Camera0_Avatar"] or _G["ZMobDB_Camera0_Model"]
+				for _, child in ipairs({ parent:GetChildren() }) do
+				local t = child:GetObjectType()
+				if t == "PlayerModel" or t == "Model" or t == "DressUpModel" or t == "CinematicModel" or t == "ModelScene" then
+					model = child
+					break
+				end
+			end
+			if (model) then
+				model:SetUnit("player")
+				if (direction == "right") then
+					model:SetPitch(-amount)
+					model:SetPitch(amount)
+				else
+					model:SetPitch(amount)
+					model:SetPitch(-amount)
+
+				end
+				ZMobDB_Settings_RefreshBoundingBox(parent);
+			end
+		
+		end
+
+	elseif (((strfind(commandName,"flip")))) then
+		local direction,params2 = ZMobDB_Extract_NextParameter(params);
+		local model = _G["ZMobDB_Camera0"]
+
+		if (model) then
+
+			local parent = _G["ZMobDB_Camera0"]
+			local model = _G["ZMobDB_Camera0_Avatar"] or _G["ZMobDB_Camera0_Model"]
+				for _, child in ipairs({ parent:GetChildren() }) do
+				local t = child:GetObjectType()
+				if t == "PlayerModel" or t == "Model" or t == "DressUpModel" or t == "CinematicModel" or t == "ModelScene" then
+					model = child
+					break
+				end
+			end
+			if (model) then
+				model:SetUnit("player")
+				if (direction == "left") then
+					model:SetFacing(-math.pi / 2)
+				end
+				if (direction == "right") then
+					model:SetFacing(math.pi / 2)
+				end
+			end
+		
+		end
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("ZMobDB Command list:");
 		DEFAULT_CHAT_FRAME:AddMessage("/ZMOB config -- popup configration window");
@@ -1728,6 +1812,8 @@ function ZMobDB_Main_ChatCommandHandler(msg)
 		DEFAULT_CHAT_FRAME:AddMessage("/ZMOB cleardatabase -- delete all model data");
 		DEFAULT_CHAT_FRAME:AddMessage("/ZMOB reflesh -- Reflesh All Models");
 		DEFAULT_CHAT_FRAME:AddMessage("/ZMOB testbox -- popup animation test window");
+		DEFAULT_CHAT_FRAME:AddMessage("/ZMOB slant-- Slant your character model, example: /zmob slant right 0.5");
+		DEFAULT_CHAT_FRAME:AddMessage("/ZMOB flip -- Flip your character model left or right, example: /zmob flip right");
 	end
 end
 function ZMobDB_Extract_NextParameter(msg)
