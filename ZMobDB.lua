@@ -912,16 +912,6 @@ local lastClick = 0
 local DOUBLE_CLICK_TIME = 0.3 -- seconds
 
 function ZMobDB_BoundingBox_OnMouseDown(self, button)
-	/*
-	local MouseButton = GetMouseButtonClicked();
-	local now = GetTime();
-	if button == "LeftButton" then
-		if (now - lastClick ) <= DOUBLE_CLICK_TIME then
-			print("Double click")
-		end
-		lastClick = now;
-	end 
-	*/
 	if (IsControlKeyDown()) and (IsShiftKeyDown()) and (IsAltKeyDown()) then
 		ZMobDB_ResetModel(self,MouseButton);
 	elseif (IsControlKeyDown()) and (IsShiftKeyDown()) then
